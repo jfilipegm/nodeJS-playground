@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Match - Football</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .league-logo img {
+            max-width: 80px;
+            height: auto;
+        }
+
+        .match-info {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .match-status {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .teams {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .team {
+            text-align: center;
+            margin: 0 15px;
+        }
+
+        .team-name {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .score {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 0 20px;
+        }
+
+        .lineup-section {
+            margin-top: 30px;
+        }
+
+        .lineup-item {
+            margin-top: 10px;
+        }
+
+        .player-info {
+            font-size: 16px;
+        }
+
+        .substitute-item {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .venue {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .venue p {
+            font-size: 16px;
+            color: #555;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Live Match Info -->
+        <div class="header">
+            <h1>Live Match - <%= liveFixtures.length > 0 ? liveFixtures[0].league.name : 'No Live Matches' %></h1>
+            <div class="league-logo">
+                <% if (liveFixtures.length > 0) { %>
+                    <img src="<%= liveFixtures[0].league.logo %>" alt="League Logo">
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Live Match Details -->
+        <% if (liveFixtures.length > 0) { %>
+            <div class="match-info">
+                <h2>Match Status: <%= liveFixtures[0].fixture.status.long %></h2>
+                <div class="match-status">
+                    <%= liveFixtures[0].fixture.status.long %> (Time: <%= liveFixtures[0].fixture.status.elapsed %> min)
+                </div>
+            </div>
+
+            <!-- Teams and Score -->
+            <div class="teams">
+                <div class="team">
+                    <img src="<%= liveFixtures[0].teams.home.logo %>" alt="Home Team Logo">
+                    <p class="team-name"><%= liveFixtures[0].teams.home.name %></p>
+                </div>
+
+                <p class="score"><%= liveFixtures[0].goals.home %> - <%= liveFixtures[0].goals.away %></p>
+
+                <div class="team">
+                    <img src="<%= liveFixtures[0].teams.away.logo %>" alt="Away Team Logo">
+                    <p class="team-name"><%= liveFixtures[0].teams.away.name %></p>
+                </div>
+            </div>
+
+            <!-- Lineups Section -->
+            <div class="lineup-section" style="text-align: center;">
+                <h2>Lineups</h2>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+                    <% fixtureLineups.response.forEach(function(lineup) { %>
+                        <div class="lineup-item" style="flex: 0 0 calc(50% - 20px); box-sizing: border-box; display: flex; flex-direction: column; align-items: center;">
+                            <h3><%= lineup.team.name %> - Formation: <%= lineup.formation %></h3>
+                            
+                            <!-- Starting XI -->
+                            <div class="players">
+                                <h4>Starting XI</h4>
+                                <% lineup.startXI.forEach(function(player) { %>
+                                    <div class="player-info">
+                                        <p><strong><%= player.player.name %></strong> (#<%= player.player.number %>) - <%= player.player.pos %></p>
+                                    </div>
+                                <% }); %>
+                            </div>
+            
+                            <!-- Substitutes -->
+                            <div class="substitutes">
+                                <h4>Substitutes</h4>
+                                <% lineup.substitutes.forEach(function(substitute) { %>
+                                    <div class="substitute-item">
+                                        <p><strong><%= substitute.player.name %></strong> (#<%= substitute.player.number %>) - <%= substitute.player.pos %></p>
+                                    </div>
+                                <% }); %>
+                            </div>
+            
+                            <!-- Coach Section -->
+                            <div class="coach">
+                                <h4>Coach</h4>
+                                <p><strong><%= lineup.coach.name %></strong></p>
+                                <% if (lineup.coach.photo) { %>
+                                    <img src="<%= lineup.coach.photo %>" alt="Coach Photo" style="max-width: 100px; height: auto;">
+                                <% } else { %>
+                                    <p>No photo available</p>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+            
+            <!-- Venue Info -->
+            <div class="venue">
+                <p><strong>Stadium:</strong> <%= liveFixtures[0].fixture.venue.name %>, <%= liveFixtures[0].fixture.venue.city %></p>
+            </div>
+        <% } else { %>
+            <p>No live match currently playing.</p>
+        <% } %>
+    </div>
+</body>
+</html>
