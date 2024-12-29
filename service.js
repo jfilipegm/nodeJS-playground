@@ -25,8 +25,8 @@ export const getFixtures = async () => {
     method: "get",
     url: "https://v3.football.api-sports.io/fixtures",
     params: {
-      live: "all",
-      league: 94,
+      live: "94-95",
+      //league: 94,
     },
     headers: {
       "x-rapidapi-key": process.env.API_KEY,

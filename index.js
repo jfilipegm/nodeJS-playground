@@ -11,10 +11,20 @@ app.get("/", async (request, response) => {
   try {
     const fixtureData = await getFixtures();
     const liveFixtures = fixtureData?.response || [];
-    const fixtureId = liveFixtures[0].fixture.id;
-    const fixtureLineups = await getFixtureLineups(fixtureId);
 
-    console.log(fixtureLineups);
+    // Fetch lineups for all fixtures
+    const fixtureLineups = await Promise.all(
+      liveFixtures.map(async (fixture) => {
+        const lineups = await getFixtureLineups(fixture.fixture.id);
+        return {
+          fixtureId: fixture.fixture.id,
+          lineups: lineups.response || [],
+        };
+      })
+    );
+
+    // Log structure for debugging
+    console.log({ liveFixtures, fixtureLineups });
 
     response.render("home", { liveFixtures, fixtureLineups });
   } catch (err) {
